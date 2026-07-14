@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logo - Prototipo navegable</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cocoa: #3e3333;
+      --merlot: #5e3f44;
+      --mauve: #a47e82;
+      --peony: #e6cece;
+      --petal: #f7eaeb;
+      --almond: #fbf5f2;
+      --paper: #fffdfc;
+      --paper-2: #fbf5f4;
+      --ink: #3e3333;
+      --muted: #7b6868;
+      --line: #e6cece;
+      --sage: #a47e82;
+      --sage-2: #f3dfdf;
+      --white: #ffffff;
+      --shadow: 0 16px 38px rgba(62, 51, 51, .09);
+      --radius: 26px;
+      --heading: "Poppins", Arial, sans-serif;
+      --sans: "Inter", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+    body.lock { overflow: hidden; }
+    img { width: 100%; display: block; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 253, 252, .94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 92px;
+      display: grid;
+      grid-template-columns: 210px 1fr 170px;
+      align-items: center;
+      gap: 24px;
+      width: min(1480px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 30px;
+      letter-spacing: .03em;
+    }
+    .mark {
+      width: 34px;
+      height: 42px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      align-items: end;
+    }
+    .mark span {
+      display: block;
+      background: linear-gradient(180deg, var(--peony), var(--mauve));
+      border-radius: 10px 10px 0 0;
+    }
+    .mark span:nth-child(1) { height: 58%; }
+    .mark span:nth-child(2) { height: 80%; }
+    .mark span:nth-child(3) { height: 100%; }
+    .mark span:nth-child(4) { height: 70%; }
+    .nav-links {
+      justify-self: center;
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .nav-item { position: relative; }
+    .nav-item > a, .nav-item > button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+      padding: 14px 0;
+      color: var(--ink);
+    }
+    .nav-item > button::after {
+      content: "⌄";
+      margin-left: 7px;
+      color: var(--muted);
+    }
+    .dropdown {
+      position: absolute;
+      top: 44px;
+      left: -18px;
+      min-width: 190px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .nav-item:hover .dropdown,
+    .nav-item.open .dropdown {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .dropdown a {
+      display: block;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: var(--cocoa);
+    }
+    .dropdown a:hover { background: var(--paper-2); }
+    .pill {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 56px;
+      min-width: 150px;
+      padding: 0 28px;
+      border: 1px solid var(--mauve);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .pill.dark {
+      background: var(--cocoa);
+      color: white;
+      border-color: var(--cocoa);
+    }
+    .pill:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .menu-toggle {
+      display: none;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      justify-self: end;
+      cursor: pointer;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      margin: 5px auto;
+      background: var(--ink);
+    }
+
+    .section {
+      width: min(1480px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 100px 0;
+    }
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--sage);
+      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+    h1, h2 {
+      margin: 0;
+      font-family: var(--heading);
+      font-weight: 500;
+      line-height: 1.04;
+      text-transform: uppercase;
+    }
+    h1 { font-size: clamp(64px, 9vw, 132px); max-width: 720px; }
+    h2 { font-size: clamp(34px, 4.4vw, 58px); }
+    h3 {
+      margin: 0;
+      font-size: clamp(18px, 2vw, 26px);
+      line-height: 1.28;
+      text-transform: uppercase;
+    }
+    p {
+      color: var(--cocoa);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+
+    .hero {
+      padding-top: 130px;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: center;
+      justify-items: center;
+      text-align: center;
+    }
+    .hero h1 {
+      max-width: 1180px;
+      font-size: clamp(32px, 4.5vw, 66px);
+    }
+    .hero-title-line { display: block; }
+    .hero-copy {
+      max-width: 900px;
+      justify-self: center;
+      text-align: center;
+      text-transform: none;
+      font-size: clamp(17px, 2vw, 24px);
+      font-weight: 400;
+    }
+    .hero-actions {
+      margin-top: 44px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+    .hero-contact-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+      margin-bottom: 18px;
+    }
+    .contact-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 20px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--cocoa);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 24px rgba(62, 51, 51, .06);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .contact-chip:hover {
+      transform: translateY(-2px);
+      border-color: var(--mauve);
+      background: var(--petal);
+    }
+    .contact-chip svg {
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+    .image-row {
+      margin-top: 72px;
+      display: grid;
+      grid-template-columns: .82fr 1fr .82fr;
+      align-items: center;
+      gap: 52px;
+      min-height: 940px;
+    }
+    .image-row img { border-radius: var(--radius); }
+    .image-row img:nth-child(1) { height: 760px; align-self: end; }
+    .image-row img:nth-child(2) { height: 900px; }
+    .image-row img:nth-child(3) { height: 760px; align-self: center; }
+
+    .quote-strip {
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 90px;
+      align-items: center;
+      padding: 90px 0;
+    }
+    .quote-strip img { height: 230px; border-radius: var(--radius); }
+    .quote-text {
+      border-left: 4px solid var(--sage);
+      padding-left: 24px;
+      max-width: 640px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .signature {
+      margin-top: 22px;
+      color: var(--muted);
+      text-transform: none;
+      font-weight: 500;
+    }
+
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 90px;
+      align-items: center;
+    }
+    .about-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 38px;
+      align-items: start;
+    }
+    .about-images img { border-radius: var(--radius); }
+    .about-images img:first-child { height: 460px; }
+    .about-images img:last-child { height: 540px; margin-top: 80px; }
+    .about-panel {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 42px;
+    }
+    .about-panel p { max-width: 650px; margin: 30px 0; }
+
+    .logos {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 30px;
+      align-items: center;
+      padding: 60px 0 120px;
+      color: var(--mauve);
+      font-size: clamp(22px, 2.5vw, 34px);
+      font-weight: 700;
+      opacity: .86;
+    }
+    .logo-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .logo-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 8px solid currentColor;
+    }
+
+    .choose {
+      display: grid;
+      grid-template-columns: .85fr 1.5fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .choose-intro p { margin: 28px 0 34px; max-width: 440px; }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 54px 64px;
+    }
+    .feature {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 22px;
+      background: var(--sage-2);
+      display: grid;
+      place-items: center;
+      color: var(--sage);
+      font-size: 30px;
+    }
+    .feature p { margin-top: 10px; }
+
+    .services {
+      display: grid;
+      grid-template-columns: .9fr 1.8fr;
+      gap: 70px;
+      align-items: start;
+    }
+    .service-intro {
+      position: sticky;
+      top: 130px;
+    }
+    .service-intro p { margin: 28px 0 34px; max-width: 520px; }
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 42px;
+    }
+    .service-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--almond);
+      cursor: pointer;
+      transition: .2s ease;
+      scroll-margin-top: 120px;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .service-card img { height: 360px; }
+    .service-card figcaption {
+      padding: 28px;
+      text-align: center;
+      background: var(--almond);
+    }
+    .service-card.active figcaption {
+      background: var(--sage);
+      color: white;
+    }
+    .service-card small {
+      display: block;
+      margin-top: 10px;
+      font-size: 15px;
+      color: inherit;
+      opacity: .84;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: 1.55fr .8fr;
+      gap: 90px;
+      align-items: center;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+    .testimonial {
+      background: var(--white);
+      border: 1px solid var(--peony);
+      border-radius: 8px;
+      padding: 38px;
+      box-shadow: var(--shadow);
+    }
+    .testimonial.featured {
+      background: var(--sage);
+      color: white;
+    }
+    .testimonial.featured p,
+    .testimonial.featured small { color: white; }
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .person img {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+    }
+    .person small {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .testimonial-copy p { margin: 26px 0 34px; }
+
+    .contact-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .contact-form {
+      display: grid;
+      gap: 22px;
+      margin-top: 42px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--white);
+      color: var(--ink);
+      padding: 22px 24px;
+      min-height: 66px;
+    }
+    .contact-form textarea {
+      min-height: 170px;
+      resize: vertical;
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: rgba(62, 51, 51, .36);
+    }
+    .contact-visual img {
+      height: 430px;
+      border-radius: var(--radius);
+      filter: saturate(.72);
+    }
+    .contact-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px 46px;
+      margin-top: 46px;
+    }
+    .contact-detail {
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+    .contact-detail-icon {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: var(--sage);
+      color: white;
+      display: grid;
+      place-items: center;
+    }
+    .contact-detail-icon svg {
+      width: 25px;
+      height: 25px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+    .contact-detail strong {
+      display: block;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+    .contact-detail a,
+    .contact-detail span {
+      color: var(--cocoa);
+      font-size: 17px;
+    }
+    .contact-page {
+      min-height: calc(100vh - 92px);
+      display: grid;
+      place-items: center;
+    }
+    .contact-page .contact-form {
+      margin-top: 42px;
+    }
+
+    .product-page-main {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 86px;
+      align-items: center;
+      min-height: calc(100vh - 92px);
+    }
+    .product-page-image {
+      height: 690px;
+      border-radius: 0;
+      object-position: center;
+    }
+    .product-page-copy {
+      max-width: 760px;
+    }
+    .product-page-copy h1 {
+      max-width: 760px;
+      font-family: var(--heading);
+      font-size: clamp(34px, 4.4vw, 58px);
+      font-weight: 500;
+      line-height: 1.04;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+    .product-page-copy p {
+      margin: 26px 0 0;
+      max-width: 680px;
+      font-size: 18px;
+      color: var(--cocoa);
+    }
+    .product-page-projects {
+      margin-top: 82px;
+    }
+    .product-page-copy .hero-contact-actions {
+      justify-content: flex-start;
+      margin: 34px 0 0;
+    }
+    .product-page-projects h3 {
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    .product-page-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    .product-page-card {
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--almond);
+      text-align: left;
+    }
+    .product-page-card img {
+      height: 330px;
+    }
+    .product-page-card div {
+      padding: 26px;
+    }
+    .product-page-card strong {
+      display: block;
+      margin-top: 10px;
+      color: var(--mauve);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .product-page-card p {
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 0;
+      background: #151313;
+      color: rgba(255, 253, 252, .86);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr 150px;
+      gap: 32px;
+      align-items: center;
+      padding: 58px 0 42px;
+    }
+    footer .brand {
+      color: var(--white);
+      align-items: center;
+      gap: 12px;
+    }
+    footer .mark {
+      flex: 0 0 34px;
+      width: 34px;
+      height: 42px;
+    }
+    footer .mark span {
+      background: linear-gradient(180deg, var(--petal), var(--mauve));
+    }
+    .footer-menu {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .footer-grid a {
+      color: rgba(255, 253, 252, .72);
+      transition: color .2s ease;
+    }
+    .footer-grid a:hover {
+      color: var(--white);
+    }
+    .footer-grid .pill {
+      color: var(--white);
+      border-color: rgba(255, 253, 252, .42);
+      min-width: 140px;
+      justify-self: end;
+    }
+    .footer-bottom {
+      width: min(1480px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 26px 0;
+      border-top: 1px solid rgba(255, 253, 252, .12);
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: rgba(255, 253, 252, .58);
+      font-size: 14px;
+    }
+    .footer-bottom a {
+      color: rgba(255, 253, 252, .58);
+    }
+    .footer-bottom a:hover {
+      color: var(--white);
+    }
+    .legal {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(62, 51, 51, .62);
+    }
+    .modal.show { display: grid; }
+    .modal-card {
+      width: min(680px, 100%);
+      background: var(--paper);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 30px 70px rgba(0,0,0,.26);
+      position: relative;
+    }
+    .modal.quote-modal .modal-card h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      white-space: nowrap;
+      padding-right: 46px;
+    }
+    .modal-close {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      font-size: 22px;
+    }
+    .form {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .form input,
+    .form textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--white);
+      padding: 15px 16px;
+      color: var(--ink);
+    }
+    .form textarea { min-height: 110px; resize: vertical; }
+    .modal-contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal-contact-actions .contact-chip {
+      min-height: 48px;
+      padding: 0 18px;
+      box-shadow: none;
+    }
+    .notice {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--sage-2);
+      color: var(--merlot);
+    }
+    .notice.show { display: block; }
+
+    [data-animate] {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+      transition:
+        opacity .55s ease,
+        transform .55s ease;
+      transition-delay: var(--delay, 0ms);
+      will-change: opacity, transform;
+    }
+    [data-animate="title"] {
+      transform: translate3d(0, 16px, 0);
+    }
+    [data-animate="copy"] {
+      transform: translate3d(0, 12px, 0);
+    }
+    [data-animate="image"] {
+      transform: translate3d(0, 16px, 0);
+    }
+    [data-animate="card"] {
+      transform: translate3d(0, 14px, 0);
+    }
+    [data-animate].in-view {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    .service-card.active {
+      box-shadow: 0 14px 34px rgba(94, 63, 68, .14);
+    }
+    .modal.show {
+      animation: modalFade .16s ease both;
+    }
+    .modal.show .modal-card {
+      animation: modalRise .28s ease both;
+    }
+    @keyframes modalFade {
+      from { background: rgba(62, 51, 51, 0); }
+      to { background: rgba(62, 51, 51, .62); }
+    }
+    @keyframes modalRise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+      [data-animate] {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .nav {
+        grid-template-columns: 1fr auto;
+        height: 78px;
+      }
+      .nav-links {
+        position: fixed;
+        inset: 78px 0 auto 0;
+        display: none;
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+        padding: 22px 24px 30px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .site-header.menu-open .nav-links { display: flex; }
+      .nav > .pill { display: none; }
+      .menu-toggle { display: block; }
+      .dropdown {
+        position: static;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        box-shadow: none;
+        margin-top: 0;
+        display: none;
+      }
+      .nav-item.open .dropdown { display: block; }
+      .section { width: min(100% - 32px, 1480px); padding: 72px 0; }
+      .hero { padding-top: 74px; }
+      .hero-grid,
+      .choose,
+      .services,
+      .testimonials,
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 42px;
+      }
+      .testimonial-copy { order: -1; }
+      .hero-copy { justify-self: center; text-align: center; }
+      .hero-actions { justify-content: center; }
+      .image-row { grid-template-columns: 1fr; min-height: 0; gap: 22px; margin-top: 48px; }
+      .image-row img,
+      .image-row img:nth-child(1),
+      .image-row img:nth-child(2),
+      .image-row img:nth-child(3) { height: 640px; align-self: auto; }
+      .logos { grid-template-columns: repeat(2, 1fr); padding-bottom: 80px; }
+      .features,
+      .service-grid,
+      .testimonial-grid,
+      .product-page-cards,
+      .contact-details {
+        grid-template-columns: 1fr;
+      }
+      .service-intro { position: static; }
+      .product-page-main { grid-template-columns: 1fr; min-height: 0; }
+      .product-page-image { height: 520px; }
+      .product-page-projects h3 { text-align: center; }
+      .footer-bottom { flex-direction: column; }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        justify-items: start;
+      }
+      .footer-menu {
+        justify-content: flex-start;
+      }
+      .footer-grid .pill {
+        justify-self: start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav { width: min(100% - 28px, 1480px); }
+      .brand { font-size: 24px; }
+      .mark { width: 28px; height: 34px; }
+      h1 { font-size: 54px; }
+      .hero h1 { font-size: clamp(30px, 10vw, 42px); }
+      .hero-title-line { display: inline; }
+      .hero-title-line + .hero-title-line::before { content: " "; }
+      h2 { font-size: 32px; }
+      .pill { width: 100%; }
+      .contact-chip { width: 100%; }
+      .hero-contact-actions { margin-bottom: 8px; }
+      .contact-row { grid-template-columns: 1fr; }
+      .contact-visual img { height: 320px; }
+      .image-row img,
+      .image-row img:nth-child(1),
+      .image-row img:nth-child(2),
+      .image-row img:nth-child(3) { height: 520px; }
+      .feature { grid-template-columns: 1fr; }
+      .service-card img { height: 260px; }
+      .product-page-image,
+      .product-page-card img { height: 320px; }
+      .product-page-copy h1 { font-size: 32px; }
+      .testimonial { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="top">
+    <nav class="nav" aria-label="Principal">
+      <a href="#top" class="brand" aria-label="Logo inicio">
+        <span class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        Logo
+      </a>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-item"><a href="#top">Inicio</a></div>
+        <div class="nav-item"><a href="#persianas" data-page-link="persianas">Persianas</a></div>
+        <div class="nav-item"><a href="#cortinas" data-page-link="cortinas">Cortinas</a></div>
+        <div class="nav-item"><a href="#tapiz" data-page-link="tapiz">Tapiz</a></div>
+        <div class="nav-item"><a href="#vidrio-canceleria" data-page-link="vidrio-canceleria">Vidrio y cancelería</a></div>
+        <div class="nav-item"><a href="#espejos" data-page-link="espejos">Espejos</a></div>
+        <div class="nav-item"><a href="#contact">Contacto</a></div>
+      </div>
+      <button class="pill dark" data-open-modal="contact">Cotizar</button>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span></button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-view active" id="homePage">
+    <section class="section hero">
+      <div class="hero-grid">
+        <h1><span class="hero-title-line">Diseño, elegancia y calidad</span><span class="hero-title-line">para tus espacios</span></h1>
+        <div class="hero-copy">
+          <p>Transformamos hogares, oficinas y negocios con soluciones a la medida en persianas, cortinas, tapiz, vidrio templado, espejos y cancelería.</p>
+          <div class="hero-contact-actions" aria-label="Canales de contacto">
+            <a class="contact-chip" href="https://wa.me/1234567890" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg>
+              WhatsApp
+            </a>
+            <a class="contact-chip" href="tel:1234567890" aria-label="Llamar por teléfono">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg>
+              Teléfono
+            </a>
+            <a class="contact-chip" href="mailto:contacto@logo.com" aria-label="Enviar correo">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
+              Correo
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="image-row" aria-label="Galería de interiores">
+        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Interior minimalista con mesa auxiliar">
+        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1000&q=80" alt="Dormitorio claro con espejo">
+        <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=900&q=80" alt="Cocina luminosa con objetos decorativos">
+      </div>
+    </section>
+
+    <section class="section services" id="services">
+      <div class="service-intro">
+        <h2>Productos</h2>
+        <p>Soluciones decorativas y funcionales hechas a la medida para mejorar privacidad, confort, seguridad y estilo en cada espacio.</p>
+      </div>
+      <div class="service-grid">
+        <figure class="service-card active" id="producto-persianas" data-service="Persianas" data-detail="Ideales para: salas, recámaras, oficinas, consultorios y negocios.">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=900&q=80" alt="Habitación con persianas y cortinas">
+          <figcaption><h3>Persianas</h3><small>Controla la entrada de luz, mejora la privacidad y dale un estilo moderno a tus espacios con persianas diseñadas a la medida.</small></figcaption>
+        </figure>
+        <figure class="service-card" id="producto-cortinas" data-service="Cortinas" data-detail="Beneficios: decoración, privacidad, control de luz y mayor confort visual.">
+          <img src="https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=900&q=80" alt="Cortinas en dormitorio">
+          <figcaption><h3>Cortinas</h3><small>Creamos ambientes cálidos, elegantes y funcionales con cortinas que se adaptan al estilo de cada espacio.</small></figcaption>
+        </figure>
+        <figure class="service-card" id="producto-tapiz" data-service="Tapiz" data-detail="Perfecto para: salas, recámaras, oficinas, muros decorativos y espacios comerciales.">
+          <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Muro decorativo con textura y mobiliario">
+          <figcaption><h3>Tapiz</h3><small>Renueva tus muros y muebles con texturas, colores y acabados que aportan personalidad y distinción.</small></figcaption>
+        </figure>
+        <figure class="service-card" id="producto-vidrio-canceleria" data-service="Vidrio templado y cancelería" data-detail="Ideal para: baños, divisiones, puertas corredizas, interiores, espacios comerciales y proyectos personalizados. Beneficios: seguridad, durabilidad, limpieza visual y acabados elegantes.">
+          <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80" alt="Baño moderno con cancel de vidrio">
+          <figcaption><h3>Vidrio templado y cancelería</h3><small>Instalamos soluciones modernas, resistentes y seguras para baños, divisiones, puertas corredizas e interiores personalizados.</small></figcaption>
+        </figure>
+        <figure class="service-card" id="producto-espejos" data-service="Espejos" data-detail="Usos comunes: baños, recibidores, recámaras, vestidores, gimnasios y locales comerciales.">
+          <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80" alt="Espejo decorativo en interior">
+          <figcaption><h3>Espejos</h3><small>Diseñamos e instalamos espejos decorativos y funcionales que aportan amplitud, luz y estilo a tus ambientes.</small></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section choose">
+      <div class="choose-intro">
+        <h2>Por qué elegirnos</h2>
+        <p>En AB Persianas &amp; Decoración transformamos tus espacios con soluciones decorativas y funcionales, hechas a la medida con materiales de calidad e instalación profesional.</p>
+      </div>
+      <div class="features">
+        <article class="feature"><div class="icon">✓</div><div><h3>Calidad</h3><p>Utilizamos materiales resistentes y de primera calidad para garantizar acabados duraderos y funcionales.</p></div></article>
+        <article class="feature"><div class="icon">▱</div><div><h3>Diseño a la medida</h3><p>Cada proyecto se adapta al estilo, necesidad y medidas de tu espacio.</p></div></article>
+        <article class="feature"><div class="icon">◇</div><div><h3>Garantía</h3><p>Brindamos seguridad y respaldo en cada instalación.</p></div></article>
+        <article class="feature"><div class="icon">⟳</div><div><h3>Servicio profesional</h3><p>Te acompañamos desde la asesoría hasta la instalación final.</p></div></article>
+      </div>
+    </section>
+
+    <section class="section testimonials" id="testimonials">
+      <div class="testimonial-grid">
+        <article class="testimonial">
+          <div class="person"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="Laura Méndez"><div><h3>Laura Méndez</h3><small>Casa habitación</small></div></div>
+          <p>“Excelente atención desde la cotización hasta la instalación. Las persianas quedaron perfectas y cambiaron por completo el ambiente de mi sala.”</p>
+        </article>
+        <article class="testimonial featured">
+          <div class="person"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="Carlos Ramírez"><div><h3>Carlos Ramírez</h3><small>Proyecto residencial</small></div></div>
+          <p>“Muy buen servicio, puntuales y profesionales. Nos ayudaron a elegir el diseño ideal para cada espacio de la casa.”</p>
+        </article>
+        <article class="testimonial">
+          <div class="person"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80" alt="Mariana Torres"><div><h3>Mariana Torres</h3><small>Oficina</small></div></div>
+          <p>“Las cortinas quedaron elegantes y funcionales. Mejoraron la privacidad sin perder iluminación natural. Muy recomendados.”</p>
+        </article>
+        <article class="testimonial">
+          <div class="person"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Andrea González"><div><h3>Andrea González</h3><small>Baño / cancelería</small></div></div>
+          <p>“El vidrio templado quedó muy bien instalado, con acabados limpios y modernos. Se nota la calidad del trabajo.”</p>
+        </article>
+      </div>
+      <div class="testimonial-copy">
+        <p class="eyebrow">Testimonios</p>
+        <h2>Clientes que confían en nuestro trabajo</h2>
+        <p>La satisfacción de nuestros clientes nos respalda. Cada proyecto es realizado con atención al detalle, materiales de calidad e instalación profesional.</p>
+      </div>
+    </section>
+
+    <section class="section contact-section">
+      <div>
+        <h2>Contáctanos</h2>
+        <form class="contact-form">
+          <div class="contact-row">
+            <input type="text" placeholder="Nombre" aria-label="Nombre">
+            <input type="text" placeholder="Apellido" aria-label="Apellido">
+          </div>
+          <input type="email" placeholder="Correo electrónico" aria-label="Correo electrónico">
+          <input type="text" placeholder="¿Cómo podemos ayudarte?" aria-label="¿Cómo podemos ayudarte?">
+          <textarea placeholder="Comentarios / preguntas" aria-label="Comentarios o preguntas"></textarea>
+          <button class="pill" type="submit">Enviar mensaje</button>
+          <div class="notice">Mensaje registrado en el prototipo.</div>
+        </form>
+      </div>
+      <div class="contact-visual">
+        <img src="https://images.unsplash.com/photo-1616486701797-0f33f61038ec?auto=format&fit=crop&w=1400&q=80" alt="Persianas y cortinas en interior luminoso">
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg></div>
+            <div><strong>Teléfono</strong><a href="tel:1234567890">123-456-7890</a></div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.3 7-11a7 7 0 0 0-14 0c0 5.7 7 11 7 11Z"></path><path d="M12 10.5h.01"></path></svg></div>
+            <div><strong>Ubicación</strong><span>Bali, Indonesia</span></div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg></div>
+            <div><strong>WhatsApp</strong><a href="https://wa.me/1234567890" target="_blank" rel="noopener">123-456-7890</a></div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg></div>
+            <div><strong>Correo</strong><a href="mailto:contacto@logo.com">contacto@logo.com</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="page-view" id="productPage" aria-label="Página de producto">
+      <section class="section product-page-main" id="productPageTop">
+        <img class="product-page-image" id="productHeroImage" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1600&q=80" alt="Dormitorio con persianas y decoración cálida">
+        <div class="product-page-copy">
+          <p class="eyebrow" id="productEyebrow">Persianas</p>
+          <h1 id="productTitle">Control de luz, privacidad y estilo para cada espacio</h1>
+          <p id="productIntro">Transforma tus espacios con persianas diseñadas para brindar comodidad, privacidad y el nivel de iluminación que necesitas.</p>
+          <p id="productDescription">En AB Persianas &amp; Decoración te asesoramos para elegir el modelo ideal, realizamos la medición y nos encargamos de la instalación para garantizar un acabado limpio, funcional y a la medida.</p>
+          <div class="hero-contact-actions" aria-label="Canales de contacto">
+            <a class="contact-chip" href="https://wa.me/1234567890" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg>
+              WhatsApp
+            </a>
+            <a class="contact-chip" href="tel:1234567890" aria-label="Llamar por teléfono">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg>
+              Teléfono
+            </a>
+            <a class="contact-chip" href="mailto:contacto@logo.com" aria-label="Enviar correo">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
+              Correo
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section product-page-uses">
+        <div class="product-page-projects">
+          <h3 id="productModelsHeading">Conoce nuestros modelos</h3>
+          <div class="product-page-cards">
+            <article class="product-page-card">
+              <img id="productModel1Image" src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=900&q=80" alt="Sala con luz natural">
+              <div><h3 id="productModel1Title">Modelo 1</h3><strong id="productModel1Subtitle">Práctico y versátil</strong><p id="productModel1Text">Una opción funcional para controlar fácilmente la entrada de luz. Su diseño sencillo se adapta a recámaras, salas, oficinas y distintos estilos de decoración.</p></div>
+            </article>
+            <article class="product-page-card">
+              <img id="productModel2Image" src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80" alt="Oficina moderna">
+              <div><h3 id="productModel2Title">Modelo 2</h3><strong id="productModel2Subtitle">Privacidad y confort</strong><p id="productModel2Text">Ideal para espacios que necesitan mayor privacidad y protección contra la luz exterior. Ofrece un ambiente más cómodo sin perder una apariencia moderna.</p></div>
+            </article>
+            <article class="product-page-card">
+              <img id="productModel3Image" src="https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&w=900&q=80" alt="Espacio comercial con interiores modernos">
+              <div><h3 id="productModel3Title">Modelo 3</h3><strong id="productModel3Subtitle">Diseño y elegancia</strong><p id="productModel3Text">Una alternativa decorativa que combina funcionalidad con acabados sofisticados. Perfecta para renovar espacios residenciales, oficinas o negocios.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact-section">
+        <div>
+          <h2>Contáctanos</h2>
+          <form class="contact-form">
+            <div class="contact-row">
+              <input type="text" placeholder="Nombre" aria-label="Nombre">
+              <input type="text" placeholder="Apellido" aria-label="Apellido">
+            </div>
+            <input type="email" placeholder="Correo electrónico" aria-label="Correo electrónico">
+            <input type="text" placeholder="¿Cómo podemos ayudarte?" aria-label="¿Cómo podemos ayudarte?">
+            <textarea placeholder="Comentarios / preguntas" aria-label="Comentarios o preguntas"></textarea>
+            <button class="pill" type="submit">Enviar mensaje</button>
+            <div class="notice">Mensaje registrado en el prototipo.</div>
+          </form>
+        </div>
+        <div class="contact-visual">
+          <img src="https://images.unsplash.com/photo-1616486701797-0f33f61038ec?auto=format&fit=crop&w=1400&q=80" alt="Persianas y cortinas en interior luminoso">
+          <div class="contact-details">
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg></div>
+              <div><strong>Teléfono</strong><a href="tel:1234567890">123-456-7890</a></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.3 7-11a7 7 0 0 0-14 0c0 5.7 7 11 7 11Z"></path><path d="M12 10.5h.01"></path></svg></div>
+              <div><strong>Ubicación</strong><span>Bali, Indonesia</span></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg></div>
+              <div><strong>WhatsApp</strong><a href="https://wa.me/1234567890" target="_blank" rel="noopener">123-456-7890</a></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg></div>
+              <div><strong>Correo</strong><a href="mailto:contacto@logo.com">contacto@logo.com</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="page-view" id="contactPage" aria-label="Página de Contacto">
+      <section class="section contact-section" id="contact">
+        <div>
+          <h2>Contáctanos</h2>
+          <form class="contact-form">
+            <div class="contact-row">
+              <input type="text" placeholder="Nombre" aria-label="Nombre">
+              <input type="text" placeholder="Apellido" aria-label="Apellido">
+            </div>
+            <input type="email" placeholder="Correo electrónico" aria-label="Correo electrónico">
+            <input type="text" placeholder="¿Cómo podemos ayudarte?" aria-label="¿Cómo podemos ayudarte?">
+            <textarea placeholder="Comentarios / preguntas" aria-label="Comentarios o preguntas"></textarea>
+            <button class="pill" type="submit">Enviar mensaje</button>
+            <div class="notice">Mensaje registrado en el prototipo.</div>
+          </form>
+        </div>
+        <div class="contact-visual">
+          <img src="https://images.unsplash.com/photo-1616486701797-0f33f61038ec?auto=format&fit=crop&w=1400&q=80" alt="Persianas y cortinas en interior luminoso">
+          <div class="contact-details">
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg></div>
+              <div><strong>Teléfono</strong><a href="tel:1234567890">123-456-7890</a></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.3 7-11a7 7 0 0 0-14 0c0 5.7 7 11 7 11Z"></path><path d="M12 10.5h.01"></path></svg></div>
+              <div><strong>Ubicación</strong><span>Bali, Indonesia</span></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg></div>
+              <div><strong>WhatsApp</strong><a href="https://wa.me/1234567890" target="_blank" rel="noopener">123-456-7890</a></div>
+            </div>
+            <div class="contact-detail">
+              <div class="contact-detail-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg></div>
+              <div><strong>Correo</strong><a href="mailto:contacto@logo.com">contacto@logo.com</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer id="footer">
+    <div class="section footer-grid">
+      <a href="#top" class="brand"><span class="mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Logo</a>
+      <nav class="footer-menu" aria-label="Menú del pie de página">
+        <a href="#top">Inicio</a>
+        <a href="#persianas">Persianas</a>
+        <a href="#cortinas">Cortinas</a>
+        <a href="#tapiz">Tapiz</a>
+        <a href="#vidrio-canceleria">Vidrio y cancelería</a>
+        <a href="#espejos">Espejos</a>
+        <a href="#contact">Contacto</a>
+      </nav>
+      <button class="pill" type="button" data-open-modal="contact">Cotizar</button>
+    </div>
+    <div class="footer-bottom">
+      <span>Copyright © 2026 Logo. Todos los derechos reservados.</span>
+      <div class="legal"><a href="#contact">Contacto</a><a href="#persianas">Productos</a><a href="#top">Inicio</a></div>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+      <h2 id="modalTitle">Contact Us</h2>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const header = document.querySelector(".site-header");
+    const toggle = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector("#navLinks");
+    const homePage = document.querySelector("#homePage");
+    const productPage = document.querySelector("#productPage");
+    const contactPage = document.querySelector("#contactPage");
+    const modal = document.querySelector("#modal");
+    const modalTitle = document.querySelector("#modalTitle");
+    const modalBody = document.querySelector("#modalBody");
+    const modalClose = document.querySelector(".modal-close");
+
+    const productPages = {
+      persianas: {
+        eyebrow: "Persianas",
+        title: "Control de luz, privacidad y estilo para cada espacio",
+        intro: "Transforma tus espacios con persianas diseñadas para brindar comodidad, privacidad y el nivel de iluminación que necesitas.",
+        description: "En AB Persianas & Decoración te asesoramos para elegir el modelo ideal, realizamos la medición y nos encargamos de la instalación para garantizar un acabado limpio, funcional y a la medida.",
+        image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1600&q=80",
+        imageAlt: "Dormitorio con persianas y decoración cálida",
+        modelsHeading: "Conoce nuestros modelos",
+        models: [
+          {
+            title: "Modelo 1",
+            subtitle: "Práctico y versátil",
+            text: "Una opción funcional para controlar fácilmente la entrada de luz. Su diseño sencillo se adapta a recámaras, salas, oficinas y distintos estilos de decoración.",
+            image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Sala con luz natural"
+          },
+          {
+            title: "Modelo 2",
+            subtitle: "Privacidad y confort",
+            text: "Ideal para espacios que necesitan mayor privacidad y protección contra la luz exterior. Ofrece un ambiente más cómodo sin perder una apariencia moderna.",
+            image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Oficina moderna"
+          },
+          {
+            title: "Modelo 3",
+            subtitle: "Diseño y elegancia",
+            text: "Una alternativa decorativa que combina funcionalidad con acabados sofisticados. Perfecta para renovar espacios residenciales, oficinas o negocios.",
+            image: "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Espacio comercial con interiores modernos"
+          }
+        ]
+      },
+      cortinas: {
+        eyebrow: "Cortinas",
+        title: "Ambientes cálidos, elegantes y funcionales",
+        intro: "Creamos ambientes cálidos, elegantes y funcionales con cortinas que se adaptan al estilo de cada espacio.",
+        description: "Te ayudamos a elegir telas, caídas y acabados para lograr decoración, privacidad, control de luz y mayor confort visual en hogares, oficinas o negocios.",
+        image: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=1600&q=80",
+        imageAlt: "Dormitorio con cortinas claras",
+        modelsHeading: "Conoce nuestros modelos",
+        models: [
+          {
+            title: "Modelo 1",
+            subtitle: "Ligero y decorativo",
+            text: "Una opción suave para vestir ventanas, filtrar la luz y dar calidez sin recargar el espacio.",
+            image: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Cortinas ligeras en habitación"
+          },
+          {
+            title: "Modelo 2",
+            subtitle: "Privacidad y confort visual",
+            text: "Ideal para recámaras, salas y oficinas donde se busca controlar la entrada de luz y conservar privacidad.",
+            image: "https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Cortinas en sala moderna"
+          },
+          {
+            title: "Modelo 3",
+            subtitle: "Elegancia a la medida",
+            text: "Acabados con presencia para renovar ambientes residenciales o comerciales con un estilo más sofisticado.",
+            image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Interior elegante con textiles"
+          }
+        ]
+      },
+      tapiz: {
+        eyebrow: "Tapiz",
+        title: "Texturas, color y personalidad para tus espacios",
+        intro: "Renueva tus muros y muebles con texturas, colores y acabados que aportan personalidad y distinción.",
+        description: "El tapiz es perfecto para salas, recámaras, oficinas, muros decorativos y espacios comerciales que buscan un cambio visible sin perder elegancia.",
+        image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
+        imageAlt: "Muro decorativo con textura y mobiliario",
+        modelsHeading: "Conoce nuestros modelos",
+        models: [
+          {
+            title: "Modelo 1",
+            subtitle: "Muro decorativo",
+            text: "Una solución visual para destacar una pared principal y darle profundidad al ambiente.",
+            image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Muro decorativo en interior"
+          },
+          {
+            title: "Modelo 2",
+            subtitle: "Textura residencial",
+            text: "Ideal para recámaras y salas que necesitan un acabado cálido, actual y con mayor personalidad.",
+            image: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Sala con acabados cálidos"
+          },
+          {
+            title: "Modelo 3",
+            subtitle: "Espacio comercial",
+            text: "Una alternativa para oficinas, locales y negocios que buscan una imagen distintiva y profesional.",
+            image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Oficina con diseño interior"
+          }
+        ]
+      },
+      "vidrio-canceleria": {
+        eyebrow: "Vidrio y cancelería",
+        title: "Seguridad, diseño y limpieza visual en cada proyecto",
+        intro: "Instalamos soluciones modernas, resistentes y seguras para baños, divisiones, puertas corredizas e interiores personalizados.",
+        description: "Trabajamos vidrio templado y cancelería con acabados limpios, durables y adaptados a cada espacio residencial, comercial o de oficina.",
+        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=80",
+        imageAlt: "Baño moderno con cancel de vidrio",
+        modelsHeading: "Conoce nuestros modelos",
+        models: [
+          {
+            title: "Modelo 1",
+            subtitle: "Cancel para baño",
+            text: "Una solución segura, moderna y fácil de limpiar para baños con acabados elegantes.",
+            image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Cancel de vidrio en baño"
+          },
+          {
+            title: "Modelo 2",
+            subtitle: "Divisiones interiores",
+            text: "Ideal para separar ambientes sin perder amplitud visual ni entrada de luz natural.",
+            image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Interior moderno con divisiones"
+          },
+          {
+            title: "Modelo 3",
+            subtitle: "Puertas y proyectos",
+            text: "Soluciones personalizadas para puertas corredizas, espacios comerciales y diseños especiales.",
+            image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Interior residencial moderno"
+          }
+        ]
+      },
+      espejos: {
+        eyebrow: "Espejos",
+        title: "Amplitud, luz y estilo para tus ambientes",
+        intro: "Diseñamos e instalamos espejos decorativos y funcionales que aportan amplitud, luz y estilo a tus ambientes.",
+        description: "Son ideales para baños, recibidores, recámaras, vestidores, gimnasios y locales comerciales que necesitan un acabado práctico y elegante.",
+        image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=80",
+        imageAlt: "Espejo decorativo en interior",
+        modelsHeading: "Conoce nuestros modelos",
+        models: [
+          {
+            title: "Modelo 1",
+            subtitle: "Decorativo",
+            text: "Un detalle visual que aporta estilo, luz y una sensación de mayor amplitud.",
+            image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Espejo decorativo"
+          },
+          {
+            title: "Modelo 2",
+            subtitle: "Funcional",
+            text: "Perfecto para baños, vestidores y áreas de uso diario con instalación limpia y segura.",
+            image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Baño con espejo"
+          },
+          {
+            title: "Modelo 3",
+            subtitle: "A la medida",
+            text: "Diseños personalizados para recámaras, recibidores, gimnasios y locales comerciales.",
+            image: "https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?auto=format&fit=crop&w=900&q=80",
+            imageAlt: "Interior con espejo amplio"
+          }
+        ]
+      }
+    };
+
+    function prepareMotion() {
+      const motionGroups = [
+        { selector: ".service-card img, .contact-visual img, .product-page-image, .product-page-card img", type: "image" },
+        { selector: ".section h2, .choose-intro h2, .service-intro h2, .testimonial-copy h2, .product-page-copy h1", type: "title" },
+        { selector: ".eyebrow, .section p, .footer-grid a, .footer-grid span", type: "copy" },
+        { selector: ".feature, .service-card, .testimonial, .post, .logo-item, .pill, .product-page-card", type: "card" }
+      ];
+
+      motionGroups.forEach(({ selector, type }) => {
+        document.querySelectorAll(selector).forEach((element) => {
+          if (element.closest(".modal") || element.closest(".site-header") || element.dataset.animate) return;
+          element.dataset.animate = type;
+        });
+      });
+
+      document.querySelectorAll(".image-row img").forEach((image, index) => {
+        image.dataset.animate = "image";
+        image.style.setProperty("--delay", `${index * 70}ms`);
+      });
+
+      document.querySelectorAll(".section, footer").forEach((section) => {
+        section.querySelectorAll("[data-animate]").forEach((element, index) => {
+          if (!element.style.getPropertyValue("--delay")) {
+            element.style.setProperty("--delay", `${Math.min(index * 28, 180)}ms`);
+          }
+        });
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: .18, rootMargin: "0px 0px -8% 0px" });
+
+      document.querySelectorAll("[data-animate]").forEach((element) => observer.observe(element));
+    }
+
+    function updateScrollMotion() {
+      const scrollY = window.scrollY;
+      header.style.boxShadow = scrollY > 40 ? "0 8px 22px rgba(62, 51, 51, .05)" : "none";
+    }
+
+    prepareMotion();
+    updateScrollMotion();
+    window.addEventListener("scroll", () => requestAnimationFrame(updateScrollMotion), { passive: true });
+
+    toggle.addEventListener("click", () => {
+      const isOpen = header.classList.toggle("menu-open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.querySelectorAll(".has-menu > button").forEach((button) => {
+      button.addEventListener("click", () => {
+        button.closest(".nav-item").classList.toggle("open");
+      });
+    });
+
+    navLinks.addEventListener("click", (event) => {
+      if (event.target.tagName === "A") {
+        header.classList.remove("menu-open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    function revealVisiblePageMotion() {
+      document.querySelectorAll(".page-view.active [data-animate]").forEach((element) => {
+        element.classList.add("in-view");
+      });
+    }
+
+    function setText(selector, text) {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = text;
+    }
+
+    function setImage(selector, src, alt) {
+      const image = document.querySelector(selector);
+      if (!image) return;
+      image.src = src;
+      image.alt = alt;
+    }
+
+    function renderProductPage(page) {
+      const product = productPages[page] || productPages.persianas;
+      productPage.setAttribute("aria-label", `Página de ${product.eyebrow}`);
+      setImage("#productHeroImage", product.image, product.imageAlt);
+      setText("#productEyebrow", product.eyebrow);
+      setText("#productTitle", product.title);
+      setText("#productIntro", product.intro);
+      setText("#productDescription", product.description);
+      setText("#productModelsHeading", product.modelsHeading);
+      product.models.forEach((model, index) => {
+        const number = index + 1;
+        setImage(`#productModel${number}Image`, model.image, model.imageAlt);
+        setText(`#productModel${number}Title`, model.title);
+        setText(`#productModel${number}Subtitle`, model.subtitle);
+        setText(`#productModel${number}Text`, model.text);
+      });
+    }
+
+    function showPage(page, shouldScrollTop = true) {
+      const isProductPage = Boolean(productPages[page]);
+      const isContactPage = page === "contact";
+      if (isProductPage) renderProductPage(page);
+      homePage.classList.toggle("active", !isProductPage && !isContactPage);
+      productPage.classList.toggle("active", isProductPage);
+      contactPage.classList.toggle("active", isContactPage);
+      header.classList.remove("menu-open");
+      toggle.setAttribute("aria-expanded", "false");
+      revealVisiblePageMotion();
+      if (shouldScrollTop) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function activateProductCard(hash) {
+      const card = document.querySelector(hash);
+      if (!card) return;
+      document.querySelectorAll(".service-card").forEach((item) => item.classList.remove("active"));
+      card.classList.add("active");
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function goToHash(hash) {
+      const pageKey = hash ? hash.replace("#", "") : "";
+      if (productPages[pageKey]) {
+        showPage(pageKey);
+        return;
+      }
+
+      if (pageKey === "contact") {
+        showPage("contact");
+        return;
+      }
+
+      showPage("home", false);
+
+      if (!hash || hash === "#top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      if (hash.startsWith("#producto-")) {
+        requestAnimationFrame(() => activateProductCard(hash));
+        return;
+      }
+
+      const target = document.querySelector(hash);
+      if (target) {
+        requestAnimationFrame(() => target.scrollIntoView({ behavior: "smooth", block: "start" }));
+      }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const hash = link.getAttribute("href");
+        if (!hash || hash === "#") return;
+        event.preventDefault();
+        if (window.location.hash !== hash) {
+          history.pushState(null, "", hash);
+        }
+        goToHash(hash);
+      });
+    });
+
+    window.addEventListener("popstate", () => goToHash(window.location.hash || "#top"));
+
+    const modalContent = {
+      contact: {
+        title: "Cotiza tu proyecto",
+        body: `
+          <p>Compártenos tu proyecto y con gusto te ayudamos a cotizar la mejor opción para tu espacio.</p>
+          <div class="modal-contact-actions" aria-label="Canales de contacto para cotizar">
+            <a class="contact-chip" href="https://wa.me/1234567890" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7l-3.2.9.9-3.1A8 8 0 1 1 20 11.6Z"></path><path d="M9.3 8.4c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.4-.3.7-.2l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.6-.5.8-.5.3-1.2.5-2 .3-2.9-.7-5.3-3-6-5.9-.2-.7 0-1.4.4-2Z"></path></svg>
+              WhatsApp
+            </a>
+            <a class="contact-chip" href="tel:1234567890" aria-label="Llamar por teléfono">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v2.7a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.7-2.7 17.4 17.4 0 0 1-5.4-5.4A17.8 17.8 0 0 1 4.2 5.5a1.8 1.8 0 0 1 1.8-2h2.7a1.8 1.8 0 0 1 1.8 1.5l.4 2.7a1.8 1.8 0 0 1-.5 1.6l-1.1 1.1a14.3 14.3 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.6-.5l2.7.4a1.8 1.8 0 0 1 1.5 1.8Z"></path></svg>
+              Teléfono
+            </a>
+            <a class="contact-chip" href="mailto:contacto@logo.com" aria-label="Enviar correo">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="m4 7 8 6 8-6"></path></svg>
+              Correo
+            </a>
+          </div>
+        `
+      },
+      video: {
+        title: "Studio Preview",
+        body: `<p>Video placeholder del prototipo. En una versión final aquí iría un embed de YouTube, Vimeo o un tour del proyecto.</p>
+        <div style="height:300px;border-radius:20px;background:#3e3333;display:grid;place-items:center;color:white;margin-top:24px;font-size:56px;">▶</div>`
+      },
+      about: {
+        title: "AB Persianas & Decoración",
+        body: `<p>Soluciones decorativas y funcionales hechas a la medida con materiales de calidad e instalación profesional.</p>`
+      },
+      testimonials: {
+        title: "Testimonios",
+        body: `<p>Clientes satisfechos con proyectos realizados con atención al detalle, materiales de calidad e instalación profesional.</p>`
+      }
+    };
+
+    function openModal(type) {
+      const content = modalContent[type] || modalContent.contact;
+      modalTitle.textContent = content.title;
+      modalBody.innerHTML = content.body;
+      modal.classList.toggle("quote-modal", type === "contact");
+      modal.classList.add("show");
+      document.body.classList.add("lock");
+      const form = modalBody.querySelector("#contactForm");
+      if (form) {
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          modalBody.querySelector("#formNotice").classList.add("show");
+        });
+      }
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+      document.body.classList.remove("lock");
+    }
+
+    document.querySelectorAll("[data-open-modal]").forEach((el) => {
+      el.addEventListener("click", () => openModal(el.dataset.openModal));
+    });
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModal();
+    });
+
+    document.querySelectorAll(".service-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".service-card").forEach((item) => item.classList.remove("active"));
+        card.classList.add("active");
+        openModal("about");
+        modalTitle.textContent = card.dataset.service;
+        modalBody.innerHTML = `<p>${card.dataset.detail}</p>`;
+      });
+    });
+
+    document.querySelectorAll(".contact-form").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        event.currentTarget.querySelector(".notice").classList.add("show");
+      });
+    });
+
+    goToHash(window.location.hash || "#top");
+  </script>
+</body>
+</html>
